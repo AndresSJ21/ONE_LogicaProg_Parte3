@@ -1,0 +1,106 @@
+<canvas width="600" height="400"></canvas>
+
+<script>
+    var pantalla = document.querySelector('canvas');
+    var pincel = pantalla.getContext('2d');
+
+    pincel.fillStyle = 'grey';
+    pincel.fillRect(0, 0, 600, 400);
+
+    var puedoDibujar = false;
+    var selectedColor = "blue";
+
+    function dibujarCirculo(evento) {
+
+        if(puedoDibujar) {
+            var x = evento.pageX - pantalla.offsetLeft;
+            var y = evento.pageY - pantalla.offsetTop;
+            var radio=5;
+            
+            if (!((x<(paletaColores.length*50)+radio)&&
+                (y<(50+radio)))){
+                
+                pincel.fillStyle = selectedColor;
+                pincel.beginPath();
+                pincel.arc(x, y, radio, 0, 2 * 3.14);
+                pincel.fill();
+
+            }
+            
+        }
+
+    }
+
+    pantalla.onmousemove = dibujarCirculo;
+
+
+    function habilitarDibujar() {
+        
+        puedoDibujar = true;
+    }
+
+    function deshabilitarDibujar() {
+
+        puedoDibujar = false;
+    }
+
+    pantalla.onmousedown = habilitarDibujar;
+
+    pantalla.onmouseup = deshabilitarDibujar;
+
+    // dibujamos la paleta de colores
+
+    function dibujaCuadroColor(x,y,color){
+
+        pincel.fillStyle=color;
+        pincel.beginPath();
+        pincel.rect(x,y,50,50);
+        pincel.fill();
+
+    }
+
+    var paletaColores = ["red","green","blue","yellow","orange"];
+
+    function dibujarPaleta(paletaColores){
+        y=0;
+        x=0;
+        for (var color=0;color<paletaColores.length;color++){
+            
+            dibujaCuadroColor(x,y,paletaColores[color]);
+            x+=50;
+
+        }
+
+    }
+
+
+dibujarPaleta(paletaColores);
+
+function seleccionarColor(evento){
+    var x = evento.pageX - pantalla.offsetLeft;
+    var y = evento.pageY - pantalla.offsetTop;
+    cantColores=paletaColores.length;
+    rangoColores=cantColores*50;
+
+    if (((x<cantColores*50)&&(y<50))){
+        aux = x;
+        cont = 0;
+        for (var j=0; j<cantColores; j++){
+            aux=aux-50;
+            if(aux>0){
+                cont++;
+            }else{
+                break;
+            }
+        }
+
+        selectedColor = paletaColores[cont] ;
+
+    }
+
+    return selectedColor;
+}
+
+pantalla.onclick=seleccionarColor;
+
+</script>
